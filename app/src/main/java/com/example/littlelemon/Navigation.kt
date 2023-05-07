@@ -21,10 +21,10 @@ fun Navigation(navController: NavHostController){
             Onboarding(navController,sharedPreferences)
         }
         composable(Home.route){
-            Home()
+            Home(navController)
         }
         composable(Profile.route){
-            Profile()
+            Profile(navController,sharedPreferences)
         }
     }
 }
