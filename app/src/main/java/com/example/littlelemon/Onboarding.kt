@@ -31,7 +31,14 @@ fun Onboarding(navController: NavController, sharedPreferences: SharedPreference
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally) {
-        Header()
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Header logo",
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.075f)
+                .padding(top = 5.dp, bottom = 5.dp)
+        )
         Box(modifier = Modifier
             .background(FirstPrimaryColor)
             .fillMaxWidth()
@@ -62,17 +69,6 @@ fun Onboarding(navController: NavController, sharedPreferences: SharedPreference
         }
         RegisterForm(context, navController, sharedPreferences)
     }
-}
-
-@Composable
-fun Header(){
-    Image(
-        painter = painterResource(id = R.drawable.logo),
-        contentDescription = "Header logo",
-        modifier = Modifier
-            .width(200.dp)
-            .height(100.dp)
-    )
 }
 
 @Composable
@@ -166,6 +162,6 @@ fun RegisterForm(context: Context, navController: NavController, sharedPreferenc
 }
 
 fun isValidEmail(email: String): Boolean {
-    val pattern = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+    val pattern = Regex("^[A-Za-z](.*)(@)(.+)(\\.)(.+)")
     return pattern.matches(email)
 }
