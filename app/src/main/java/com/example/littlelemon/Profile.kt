@@ -1,6 +1,7 @@
 package com.example.littlelemon
 
 import android.content.SharedPreferences
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -15,6 +16,7 @@ import com.example.littlelemon.ui.theme.Markazi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.littlelemon.ui.theme.*
 
@@ -22,7 +24,14 @@ import com.example.littlelemon.ui.theme.*
 fun Profile(navController: NavController, sharedPreferences: SharedPreferences) {
     Column(modifier = Modifier.fillMaxWidth(),
     horizontalAlignment = Alignment.CenterHorizontally) {
-        Header()
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Header logo",
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.075f)
+                .padding(top = 5.dp, bottom = 5.dp)
+        )
         Column(Modifier.fillMaxSize().padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         ) {

@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 
 
 @Composable
-fun Navigation(navController: NavHostController){
+fun Navigation(navController: NavHostController, items: List<MenuItemRoom>){
     val context = LocalContext.current
     val sharedPreferences by lazy {  context.getSharedPreferences("LittleLemon", Context.MODE_PRIVATE)}
     NavHost(navController = navController,
@@ -21,7 +21,7 @@ fun Navigation(navController: NavHostController){
             Onboarding(navController,sharedPreferences)
         }
         composable(Home.route){
-            Home(navController)
+            Home(navController, items)
         }
         composable(Profile.route){
             Profile(navController,sharedPreferences)
