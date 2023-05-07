@@ -30,9 +30,7 @@ fun Home(navController: NavController, items: List<MenuItemRoom>){
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         TopBar(navController)
-        HeroSection()
-        MenuCategory()
-        MenuItemsList(items = items)
+        HeroSection(items)
     }
 }
 
@@ -65,9 +63,10 @@ fun TopBar(navController: NavController){
 }
 
 @Composable
-fun HeroSection(){
+fun HeroSection(items: List<MenuItemRoom>){
     val textFieldColors = TextFieldDefaults.textFieldColors( backgroundColor = WhiteHighlightColor)
     var searchPhrase by remember { mutableStateOf("") }
+    var menuItems = items
     Column(
         modifier = Modifier
             .background(FirstPrimaryColor)
@@ -108,18 +107,25 @@ fun HeroSection(){
         TextField(value = searchPhrase, onValueChange = {
             searchPhrase = it
         },
-            label = { Text(text = "Search")},
+            label = { Text(text = "Enter search phrase")},
             colors = textFieldColors,
             singleLine = true,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .align(Alignment.CenterHorizontally))
+        menuItems = if (searchPhrase.isNotEmpty()){
+            menuItems.filter { it.title.lowercase().contains(searchPhrase.lowercase()) }
+        } else items
     }
+    MenuCategory(menuItems)
 }
 
 @Composable
-fun MenuCategory(){
+fun MenuCategory(items: List<MenuItemRoom>){
+    var menuItems by remember {
+        mutableStateOf(items)
+    }
     val buttonColors = ButtonDefaults.buttonColors(backgroundColor = SecondPrimaryColor)
     Card(modifier = Modifier.fillMaxWidth()) {
         Column {
@@ -138,25 +144,25 @@ fun MenuCategory(){
                 .padding(bottom = 10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically) {
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = {  menuItems = items.filter { it.category.lowercase() == "starters" } },
                     shape = RoundedCornerShape(16.dp),
                     colors = buttonColors) {
                     Text(text = "Starters",
                         fontFamily = Markazi, color = BlackHighLightColor, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 }
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = { menuItems = items.filter { it.category.lowercase() == "mains" } },
                     shape = RoundedCornerShape(16.dp),
                     colors = buttonColors) {
                     Text(text = "Mains",
                         fontFamily = Markazi, color = BlackHighLightColor, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 }
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = { menuItems = items.filter { it.category.lowercase() == "desserts" } },
                     shape = RoundedCornerShape(16.dp),
                     colors = buttonColors) {
                     Text(text = "Desserts",
                         fontFamily = Markazi, color = BlackHighLightColor, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 }
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = { menuItems = items.filter { it.category.lowercase() == "drinks" } },
                     shape = RoundedCornerShape(16.dp),
                     colors = buttonColors) {
                     Text(text = "Drinks",
@@ -165,11 +171,12 @@ fun MenuCategory(){
             }
         }
     }
+    if(menuItems.isEmpty()) {menuItems = items}
+    MenuItemsList(items = menuItems)
 }
 
 @Composable
 fun MenuItemsList(items: List<MenuItemRoom>){
-    Log.d("MenuItemsList", "Items size: ${items.size}")
     LazyColumn(modifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()){
