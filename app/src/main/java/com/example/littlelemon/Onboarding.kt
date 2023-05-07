@@ -1,6 +1,9 @@
 package com.example.littlelemon
 
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -20,12 +24,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.littlelemon.ui.theme.*
 
 
 @Composable
-fun Onboarding(){
-
+fun Onboarding(navController: NavController, sharedPreferences: SharedPreferences){
+    val context = LocalContext.current
     Column(Modifier.fillMaxSize(),) {
         Header()
         Box(modifier = Modifier
@@ -56,7 +61,7 @@ fun Onboarding(){
                 modifier = Modifier.padding(10.dp)
             )
         }
-        RegisterForm()
+        RegisterForm(context, navController, sharedPreferences)
     }
 }
 
@@ -72,7 +77,8 @@ fun Header(){
 }
 
 @Composable
-fun RegisterForm(){
+fun RegisterForm(context: Context, navController: NavController, sharedPreferences: SharedPreferences){
+    val toastMessage = "Registration unsuccessful.\nPlease enter all data."
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -134,8 +140,21 @@ fun RegisterForm(){
             else textFieldColorsError,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
-        Button(onClick = {
-                         buttonPressed = true
+        Button(
+            onClick = {
+                buttonPressed = true
+                if (!isValidEmail(email) || lastName.isEmpty() || firstName.isEmpty()){
+                  Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    val editor = sharedPreferences.edit()
+                    editor.putString("first_name", firstName)
+                    editor.putString("last_name", lastName)
+                    editor.putString("email", email)
+                    editor.apply()
+                    navController.navigate(Home.route)
+                    Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                }
  },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
@@ -150,10 +169,4 @@ fun RegisterForm(){
 fun isValidEmail(email: String): Boolean {
     val pattern = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
     return pattern.matches(email)
-}
-
-@Preview (showBackground = true)
-@Composable
-fun OnboardindPreview(){
-    Onboarding()
 }
